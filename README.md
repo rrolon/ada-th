@@ -1,1 +1,3 @@
-# ada-th
+# AdaTh: Adaboost detection by Threshold
+
+A new ensemble-based method for pattern recognition to be used for solving multiclass classification problems. The AdaTh method combines a boosting technique (Adaboost.M1) with just a few very simple weak classifiers which are based on classification by means of threshold of sparse codes. The AdaTh method is applied to five highly confusing phonemes taken from the TIMIT database. Tacking into account auditory spectrograms (spectro-temporal representations) of phonemes, the AdaTh method builds a (big) structured dictionary and performs a dimensionality reduction of it in order to avoid redundant atoms and enhance its discriminability. Sparse representations of the data in terms of such a reduced dictionary are used in order to train and test the ensemble classification system.
