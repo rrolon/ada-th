@@ -29,16 +29,16 @@ amp = nrm;
 
 residule = x;
 index = [];
-if nargin < 3,
+if nargin < 3
 	natom = N;
 	frac = 1e-2;
 end
 k = 0;
 coef=[];
 % fprintf('\nMP_Matrix:\n');
-while (amp > frac*nrm) & (k < natom),
+while (amp > frac*nrm) && (k < natom)
 	P = abs(residule' * F);
-	[amp i] = max(P);
+	[amp, i] = max(P);
 	i = i(1);
 	index = [index i];
 	coefnew = residule' * F(:, i);
@@ -50,7 +50,7 @@ end
 
 h = length(coef);
 coefbest = zeros(N, 1);
-for i = 1:h,
+for i = 1:h
 	coefbest(index(i)) = coefbest(index(i)) + coef(i);
 end
 coef = coefbest;

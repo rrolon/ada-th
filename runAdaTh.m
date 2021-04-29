@@ -1,4 +1,4 @@
-% function kmeans_eval
+% main script
 % The aim of this script is to select the most representative elements of a
 % big dictionary.
 % By using kmeans clustering, the script selects different number of
@@ -50,13 +50,13 @@ load 'TIMIT_data/2500patterns/tst_data_eh.mat';
 load 'TIMIT_data/2500patterns/tst_data_ih.mat';
 load 'TIMIT_data/2500patterns/tst_data_jh.mat';
 
-%kppr = perm(10)
 % training data
 trn_data_b=trn_data_b(:,1:kpp);
 trn_data_d=trn_data_d(:,1:kpp);
 trn_data_eh=trn_data_eh(:,1:kpp);
 trn_data_ih=trn_data_ih(:,1:kpp);
 trn_data_jh=trn_data_jh(:,1:kpp);
+
 % validation data
 %val_data_b=trn_data_b(:,:kpp);
 %val_data_d=trn_data_d(:,1:kpp);
@@ -64,14 +64,12 @@ trn_data_jh=trn_data_jh(:,1:kpp);
 %val_data_ih=trn_data_ih(:,1:kpp);
 %val_data_jh=trn_data_jh(:,1:kpp);
 
-
-
+% testing data
 tst_data_b=tst_data_b(:,1:kpp);
 tst_data_d=tst_data_d(:,1:kpp);
 tst_data_eh=tst_data_eh(:,1:kpp);
 tst_data_ih=tst_data_ih(:,1:kpp);
 tst_data_jh=tst_data_jh(:,1:kpp);
-
 
 range=zeros(5,2);
 for i=1:5
@@ -79,32 +77,33 @@ for i=1:5
 end;
 
 disp('Starting the test...');
-%%% Select the number of centroids %%%
-iter=0;
-tic;
-for c=iters
+
+iter = 0;
+% tic;
+
+for c = iters
     disp(['Kmeans centroids = ' num2str(c)]);
-    iter=iter+1;
-    for r=1:rmax
+    iter = iter+1;
+    for r = 1:rmax
 
         disp(['Repetition = ' num2str(r)]);
         
-        [idx,centr]=kmeans(dict_b',c);  
-        centr_b=replace_atoms(dict_b,centr');
+        [~, centr] = kmeans(dict_b', c);  
+        centr_b = replace_atoms(dict_b, centr');
        
-        [idx,centr]=kmeans(dict_d',c);   
-        centr_d=replace_atoms(dict_d,centr');
+        [~, centr] = kmeans(dict_d', c);   
+        centr_d = replace_atoms(dict_d, centr');
 
-        [idx,centr]=kmeans(dict_eh',c);  
-        centr_eh=replace_atoms(dict_eh,centr');
+        [~, centr] = kmeans(dict_eh', c);  
+        centr_eh = replace_atoms(dict_eh, centr');
 
-        [idx,centr]=kmeans(dict_ih',c);    
-        centr_ih=replace_atoms(dict_ih,centr');
+        [~, centr] = kmeans(dict_ih',c);    
+        centr_ih = replace_atoms(dict_ih,centr');
 
-        [idx,centr]=kmeans(dict_jh',c);    
-        centr_jh=replace_atoms(dict_jh,centr');
+        [~, centr] = kmeans(dict_jh', c);    
+        centr_jh = replace_atoms(dict_jh, centr');
 
-        big_dict{r}=[centr_b centr_d centr_eh centr_ih centr_jh];
+        big_dict{r} = [centr_b centr_d centr_eh centr_ih centr_jh];
 
         %%% Find the activations %%%
         % Activations for TRAIN
@@ -112,8 +111,8 @@ for c=iters
         for MP_coeff = MPiters
             mpiter=mpiter+1;
             disp(['MP coefficients = ' num2str(MPiters(mpiter))]);            
-            % pp_trn=find_activations(big_dict{r},trn_data_b,trn_data_d,trn_data_eh,trn_data_ih,trn_data_jh,MP_coeff,'trn','adatree');
-            pp_trn=find_activations(big_dict{r},trn_data_b,trn_data_d,trn_data_eh,trn_data_ih,trn_data_jh,MP_coeff,'trn','adath');
+            % pp_trn = find_activations(big_dict{r},trn_data_b,trn_data_d,trn_data_eh,trn_data_ih,trn_data_jh,MP_coeff,'trn','adatree');
+            pp_trn = find_activations(big_dict{r},trn_data_b,trn_data_d,trn_data_eh,trn_data_ih,trn_data_jh,MP_coeff,'trn','adath');
             % Activations for TEST
             % pp_tst=find_activations(big_dict{r},tst_data_b,tst_data_d,tst_data_eh,tst_data_ih,tst_data_jh,MP_coeff,'tst','adatree');
             pp_tst=find_activations(big_dict{r},tst_data_b,tst_data_d,tst_data_eh,tst_data_ih,tst_data_jh,MP_coeff,'tst','adath');
@@ -122,7 +121,7 @@ for c=iters
             
             % train_mlp()
             
-            %% prueba con arbol de desiciones
+            % prueba con arbol de desiciones
             
             % train_tree()
             
@@ -133,7 +132,7 @@ for c=iters
             %%
             
             [trnErr,tstErr] = adath(adaiters,0,pp_trn,range,pp_tst,range,1);
-%             [trnErr,tstErr] = adatree(adaiters,0,pp_trn,range,pp_tst,range,1);
+            % [trnErr,tstErr] = adatree(adaiters,0,pp_trn,range,pp_tst,range,1);
             
             disp(['Train error ' num2str(trnErr(end)*100) ' %']);
             disp(['Test error ' num2str(tstErr(end)*100) ' %']);            
@@ -141,57 +140,25 @@ for c=iters
             ens_err_tst(r,mpiter)=tstErr*100;
             ens_err_trn(r,mpiter)=trnErr(end)*100;
             
-        end;
+        end
+    end
 
-        %Elapsed time estimation
-%         if c==iters(1)
-%             if r==1
-%                 elapsed=toc;
-%                 estimated=elapsed*length(iters)*rmax/3600;
-%                 disp(['Estimated time: ' num2str(estimated) ' hs']);
-%                 if ~cluster
-%                     pause;
-%                 end;
-%             end;
-%         end;
+    mean_err_trn(iter,:) = mean(ens_err_trn);
+    max_err_trn(iter,:) = max(ens_err_trn);
+    min_err_trn(iter,:) = min(ens_err_trn);
 
-    end;
+    mean_err_tst(iter,:) = mean(ens_err_tst);
+    max_err_tst(iter,:) = max(ens_err_tst);
+    min_err_tst(iter,:) = min(ens_err_tst);
 
+    [Min,idx_min] = min(ens_err_trn);
+    [Min,idx_min2] = min(min(ens_err_trn));
+    good_dicts{iter} = big_dict{idx_min(idx_min2)};
 
-
-    mean_err_trn(iter,:)=mean(ens_err_trn);
-    max_err_trn(iter,:)=max(ens_err_trn);
-    min_err_trn(iter,:)=min(ens_err_trn);
-
-
-    mean_err_tst(iter,:)=mean(ens_err_tst);
-    max_err_tst(iter,:)=max(ens_err_tst);
-    min_err_tst(iter,:)=min(ens_err_tst);
-
-
-    % Retein the best dictionary and MP coeff
-%     if (min(min_err(iter,:))<global_min(1))
-%         [global_min(1),global_min(2)]=min(min_err(iter,:));
-%         best_dict=big_dict{iter};
-%         best_MP=MPiters(global_min(2));
-%         minimum=global_min(1);
-%         save best_dict.mat best_dict best_MP minimum;
-%         
-%     end;
-
-    [Min,idx_min]=min(ens_err_trn);
-    [Min,idx_min2]=min(min(ens_err_trn));
-    good_dicts{iter}=big_dict{idx_min(idx_min2)};
-
-    % Partial save
-    %     save(filename,'mean_err','max_err','min_err','good_dicts');
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % disp(['saving partial results...']);
     % eval(['save ' filename ' mean_err' ' max_err' ' min_err' ' good_dicts']);
 
-    save all_error_vs_number_of_cent_funct_thtrain1_14_07_2020
-
-end;
+end
 
 
 
@@ -205,14 +172,6 @@ end;
 % filename=['full_' filename ];
 % eval(['save ' filename ' mean_err' ' max_err' ' min_err' ' good_dicts' ' best_dict' ' iters']);
 
-
-
-% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%Plot the results
-% if ~cluster
-%     figure(1)
 figure()
 subplot(2,1,1)    
 plot(iters,max_err_trn,'r',iters,mean_err_trn,'k',iters,min_err_trn,'b');
@@ -222,15 +181,4 @@ subplot(2,1,2)
 plot(iters,max_err_tst,'r',iters,mean_err_tst,'k',iters,min_err_tst,'b');
 xlabel('k-means centroids');
 ylabel('Testing error');
-%     saveas(gcf,['kmeans_eval' num2str(filenumber)], 'tif');
-% end;
-
-
-
-%Total time elapsed
-elapsed=toc/60;
-disp(['Elapsed time: ' num2str(elapsed) ' min']);
-
-clock
-
 
