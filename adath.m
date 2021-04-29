@@ -30,6 +30,7 @@ while k<maxW
     disp('----------------');
     k = k+1;
     disp(k);
+    % 200 muestras por cada clase
     ktrn = bootsmp(D,Ntrn); % call to mex-bootstrap sampling
     h(k,:) = thtrain(pp_trn,ran_trn,ktrn,N);
     % compute the weighted error for the weak-classifier

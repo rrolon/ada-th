@@ -5,7 +5,10 @@ function c = thclass2(cx, Nc, N)
     for j = 1:Nc
         px(j) = sum(cx((j-1)*N+1:j*N));
     end
-    [~, imx] = max(px);
-    c(imx) = 1;
+    % selecciona la clase
+       
+    ind_px = find(px==max(px));
+    ind_perm = ind_px(randperm(length(ind_px)));
+    c(ind_perm(1)) = 1;
     
 end
