@@ -15,7 +15,7 @@ N = 10; % number of discriminative atoms (column size of each sub-dictionary)
 [Np,~] = size(pp_trn); % Np: all patterns;
 Nc = size(ran_trn,1); % number of classes
 D = ones(Np,1)/Np; % sampling distribution
-Ntrn = 1000; % training patterns for each sampling
+Ntrn = 1000; % number of samples for the adaboost
 
 nErr = zeros(maxW,1);
 eErr = ones(maxW,1);
@@ -29,12 +29,12 @@ while k<maxW
     drawnow;
     disp('----------------');
     k = k+1;
-    disp(k);
+    disp(['weak classifier number: ',num2str(k)])
     % 200 muestras por cada clase
     ktrn = bootsmp(D,Ntrn); % call to mex-bootstrap sampling
-    h(k,:) = thtrain(pp_trn,ran_trn,ktrn,N);
+    h(k,:) = thtrain(pp_trn, ran_trn, ktrn, N);
     % compute the weighted error for the weak-classifier
-    c(k,:,:) = thclass(h(k,:),pp_tst,N);
+    c(k,:,:) = thclass(h(k,:), pp_tst, N);
     % testing classifier
     [e, Err] = ctest(c(k,:,:), ran_tst);
     werr = sum(Err.*D);                      

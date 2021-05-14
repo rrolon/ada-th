@@ -20,7 +20,7 @@ load 'train-FIXED/dict_jh-256x256-A-logE-norm.mat';
 
 kppt = 2500; % total number of patterns (training and testing)
 kpp = 1*kppt; % total number of training data (80%)
-MPiters = 34;%10; % sparsity level (MP)
+MPiters = 10; % sparsity level (MP)
 adaiters = 150; % number of iterations (Adaboost)
 rmax = 1; % 5; % number of repetitions (kmeans)
 

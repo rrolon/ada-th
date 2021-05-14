@@ -14,7 +14,8 @@ function ec = eclass(hh,w,pp,N,v)
     end
 
     for i = 1:size(pp,1)
-        ec(i,voting_th(v(:,i,:), w)) = 1;
+        vote = voting_th(v(:,i,:), w);
+        ec(i,vote) = 1;
     end
 
 end

@@ -12,6 +12,7 @@ function cc = thclass(h, pp, N)
             cx = u(h); % pre-classify
             th = th-0.1; % update threshold
         end
+        %
         cc(i,:) = thclass2(cx,Nc,N)';
     end
     

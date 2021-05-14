@@ -32,7 +32,7 @@ end;
 
 
 %% Obtain the activations for the training patterns
-if (strcmp(set,'all')|strcmp(set,'trn'))
+if (strcmp(set,'all')||strcmp(set,'trn'))
 
     if nargin < 1
         fid=fopen(filename_trn,'w');
